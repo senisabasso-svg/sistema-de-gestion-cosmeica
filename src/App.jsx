@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PublicBookingSection from "./components/PublicBookingSection";
 
 const BRAND_CLAIM =
@@ -122,6 +122,7 @@ Recorda que como te ven, te tratan. Ustedes se dedican a nuestra estetica.. Noso
 
 export default function App() {
   const year = new Date().getFullYear();
+  const [reservaModalOpen, setReservaModalOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
   const [chatInput, setChatInput] = useState("");
@@ -200,6 +201,25 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    if (!reservaModalOpen) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setReservaModalOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [reservaModalOpen]);
+
   return (
     <>
       <a className="skip-link" href="#contenido">
@@ -207,14 +227,13 @@ export default function App() {
       </a>
 
       <header className="hero fondo-oscuro">
-        <nav className="contenedor nav-principal" aria-label="Navegacion principal">
-          <a href="#" className="marca" aria-label="Inicio">
-            <img src="/assets/logo.png" alt="Logo de Gestion Cosmetica" className="marca-imagen" />
-          </a>
-          <a href="#contacto" className="boton boton-secundario">
-            Contactar
-          </a>
-        </nav>
+        <div className="hero-barra-marca">
+          <div className="contenedor hero-barra-marca-inner">
+            <a href="#contenido" className="marca marca-hero-centrada" aria-label="Inicio">
+              <img src="/assets/logo.png" alt="Logo de Gestion Cosmetica" className="marca-imagen" />
+            </a>
+          </div>
+        </div>
 
         <div className="contenedor hero-contenido" id="contenido">
           <p className="etiqueta">Gestion para peluquerias y barberias</p>
@@ -224,11 +243,15 @@ export default function App() {
             flujo de cobro ordenado.
           </p>
           <div className="hero-acciones">
-            <a href="#" className="boton boton-primario">
-              Solicitar demo
-            </a>
-            <a href="#" className="boton boton-secundario">
-              Ver precios
+            <button
+              type="button"
+              className="boton boton-primario"
+              onClick={() => setReservaModalOpen(true)}
+            >
+              Reserva web
+            </button>
+            <a href="#contacto" className="boton boton-secundario">
+              Tengo una cosmetica
             </a>
           </div>
           <p className="nota">Sin instalaciones complejas. Todo en la nube.</p>
@@ -319,24 +342,32 @@ export default function App() {
           </div>
         </section>
 
-        <PublicBookingSection />
-
         <section className="seccion cierre fondo-oscuro" id="contacto">
           <div className="contenedor cierre-contenido">
             <div>
               <h2>Ordena tu operacion y dale trazabilidad a cada cliente</h2>
               <p>Agenda, cobros e informes en una sola plataforma para tu salon.</p>
               <div className="hero-acciones">
-                <a href="#" className="boton boton-primario">
-                  Solicitar demo
-                </a>
-                <a href="#" className="boton boton-secundario">
-                  Contactar
+                <button
+                  type="button"
+                  className="boton boton-primario"
+                  onClick={() => setReservaModalOpen(true)}
+                >
+                  Reserva web
+                </button>
+                <a href="#formulario-cosmetica" className="boton boton-secundario">
+                  Tengo una cosmetica
                 </a>
               </div>
             </div>
 
-            <form className="formulario" action="#" method="post" aria-label="Formulario de contacto">
+            <form
+              className="formulario"
+              id="formulario-cosmetica"
+              action="#"
+              method="post"
+              aria-label="Formulario de contacto para cosmeticas"
+            >
               <h3>Hablemos de tu salon</h3>
               <p className="form-note">Formulario de ejemplo. Conectar backend despues.</p>
               {/* TODO: Reemplazar por endpoint real o mailto:ventas@tu-dominio.com */}
@@ -371,6 +402,35 @@ export default function App() {
           </nav>
         </div>
       </footer>
+
+      {reservaModalOpen && (
+        <div
+          className="modal-reserva-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-reserva-titulo"
+          onClick={() => setReservaModalOpen(false)}
+        >
+          <div className="modal-reserva-dialog" onClick={(event) => event.stopPropagation()}>
+            <div className="modal-reserva-cabecera">
+              <h2 id="modal-reserva-titulo" className="modal-reserva-titulo">
+                Reserva web
+              </h2>
+              <button
+                type="button"
+                className="modal-reserva-cerrar"
+                onClick={() => setReservaModalOpen(false)}
+                aria-label="Cerrar reserva web"
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-reserva-cuerpo">
+              <PublicBookingSection variant="modal" />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="chatbox">
         <button

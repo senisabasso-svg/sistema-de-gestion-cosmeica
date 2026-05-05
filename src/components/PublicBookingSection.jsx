@@ -24,7 +24,7 @@ const formatFriendlyDateTime = (dateTimeString) => {
   });
 };
 
-export default function PublicBookingSection() {
+export default function PublicBookingSection({ variant = "page" }) {
   const [peluquerias, setPeluquerias] = useState([]);
   const [loadingPeluquerias, setLoadingPeluquerias] = useState(true);
   const [errorPeluquerias, setErrorPeluquerias] = useState("");
@@ -158,11 +158,20 @@ export default function PublicBookingSection() {
     }
   };
 
+  const isModal = variant === "modal";
+  const Wrapper = isModal ? "div" : "section";
+  const wrapperProps = isModal
+    ? { className: "reserva-publica-modal-inner" }
+    : {
+        className: "seccion fondo-claro",
+        id: "reservas-publicas",
+      };
+
   return (
-    <section className="seccion fondo-claro" id="reservas-publicas">
-      <div className="contenedor">
-        <h2>Reserva publica de turnos</h2>
-        <p className="intro">
+    <Wrapper {...wrapperProps}>
+      <div className={isModal ? "contenedor contenedor-modal-reserva" : "contenedor"}>
+        {!isModal && <h2>Reserva publica de turnos</h2>}
+        <p className={isModal ? "intro intro-modal" : "intro"}>
           Elige peluqueria, fecha y horario disponible. Luego completa tus datos para confirmar tu
           reserva.
         </p>
@@ -294,6 +303,6 @@ export default function PublicBookingSection() {
           </form>
         </div>
       </div>
-    </section>
+    </Wrapper>
   );
 }
