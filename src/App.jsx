@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PublicBookingSection from "./components/PublicBookingSection";
 
 const BRAND_CLAIM =
   "Recorda que como te ven, te tratan. Ustedes se dedican a nuestra estetica.. Nosotros de la suya como emprendimiento o empresa";
@@ -317,6 +318,8 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        <PublicBookingSection />
 
         <section className="seccion cierre fondo-oscuro" id="contacto">
           <div className="contenedor cierre-contenido">

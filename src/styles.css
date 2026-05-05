@@ -353,12 +353,14 @@ label {
 
 input,
 textarea,
+select,
 button {
   font: inherit;
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   border-radius: 0.6rem;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -547,4 +549,122 @@ textarea:focus-visible {
   margin: 0 0 0.45rem;
   color: #9a1634;
   font-size: 0.88rem;
+}
+
+.reserva-publica {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.reserva-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 1rem;
+}
+
+.reserva-panel h3 {
+  margin: 0 0 0.4rem;
+}
+
+.reserva-panel label {
+  margin-top: 0.45rem;
+}
+
+.reserva-panel input,
+.reserva-panel textarea,
+.reserva-panel select {
+  border-color: var(--border);
+  background: #fff;
+}
+
+.slots-grid {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.slot-item {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: #fff;
+  color: var(--text);
+  padding: 0.52rem 0.3rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.1rem;
+  justify-items: center;
+}
+
+.slot-item small {
+  font-size: 0.76rem;
+}
+
+.slot-libre {
+  border-color: #b9eadf;
+  background: #f2fffb;
+}
+
+.slot-libre:hover {
+  background: #e7fbf5;
+}
+
+.slot-ocupado {
+  border-color: #f0c9d4;
+  background: #fff4f7;
+  color: #835167;
+  cursor: not-allowed;
+}
+
+.slot-activo {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.reserva-formulario .boton {
+  margin-top: 0.4rem;
+  width: 100%;
+}
+
+.reserva-slot-seleccionado {
+  margin: 0.7rem 0 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.55rem;
+  background: #ede9ff;
+  color: #2f2852;
+}
+
+.reserva-error,
+.reserva-success {
+  margin: 0.65rem 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.55rem;
+  font-size: 0.94rem;
+}
+
+.reserva-error {
+  color: #952748;
+  background: #ffeef3;
+  border: 1px solid #f5c6d6;
+}
+
+.reserva-success {
+  color: #1a6f56;
+  background: #ebfff8;
+  border: 1px solid #b8ecdb;
+}
+
+@media (min-width: 680px) {
+  .slots-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 920px) {
+  .reserva-publica {
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: start;
+  }
 }
