@@ -38,8 +38,6 @@ export default function PublicBookingSection({ variant = "page" }) {
 
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
-  const [emailCliente, setEmailCliente] = useState("");
-  const [notas, setNotas] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState({ type: "", text: "" });
 
@@ -126,6 +124,11 @@ export default function PublicBookingSection({ variant = "page" }) {
       return;
     }
 
+    if (!telefonoCliente.trim()) {
+      setFeedback({ type: "error", text: "El telefono es obligatorio." });
+      return;
+    }
+
     setSubmitting(true);
     try {
       await crearReservaPublica({
@@ -133,18 +136,18 @@ export default function PublicBookingSection({ variant = "page" }) {
         fechaHora: selectedSlot,
         nombreCliente: nombreCliente.trim(),
         telefonoCliente: telefonoCliente.trim(),
-        emailCliente: emailCliente.trim(),
-        notas: notas.trim(),
+        emailCliente: "",
+        notas: "",
       });
 
       setFeedback({
         type: "success",
-        text: "Reserva creada correctamente. Te esperamos en el horario seleccionado.",
+        text:
+          "Reserva creada correctamente. Tu confirmacion llegara por WhatsApp al numero indicado. Te esperamos en el horario seleccionado.",
       });
       setSelectedSlot("");
+      setNombreCliente("");
       setTelefonoCliente("");
-      setEmailCliente("");
-      setNotas("");
       await recargarDisponibilidad();
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
@@ -248,37 +251,28 @@ export default function PublicBookingSection({ variant = "page" }) {
 
           <form className="reserva-panel reserva-formulario" onSubmit={enviarReserva}>
             <h3>3) Completa tus datos</h3>
+            <p className="reserva-whatsapp-aviso" role="note">
+              Tu confirmacion llegara por WhatsApp al numero que indiques al confirmar la reserva.
+            </p>
             <label htmlFor="nombre-cliente">Nombre *</label>
             <input
               id="nombre-cliente"
               type="text"
+              autoComplete="name"
               value={nombreCliente}
               onChange={(event) => setNombreCliente(event.target.value)}
               required
             />
 
-            <label htmlFor="telefono-cliente">Telefono</label>
+            <label htmlFor="telefono-cliente">Telefono *</label>
             <input
               id="telefono-cliente"
               type="tel"
+              autoComplete="tel"
+              inputMode="tel"
               value={telefonoCliente}
               onChange={(event) => setTelefonoCliente(event.target.value)}
-            />
-
-            <label htmlFor="email-cliente">Email</label>
-            <input
-              id="email-cliente"
-              type="email"
-              value={emailCliente}
-              onChange={(event) => setEmailCliente(event.target.value)}
-            />
-
-            <label htmlFor="notas-reserva">Notas</label>
-            <textarea
-              id="notas-reserva"
-              rows="3"
-              value={notas}
-              onChange={(event) => setNotas(event.target.value)}
+              required
             />
 
             {selectedSlot && (
