@@ -120,20 +120,48 @@ export default function PublicBookingSection({ variant = "page" }) {
       return;
     }
 
-    if (!nombreCliente.trim()) {
+    const formEl = event.currentTarget;
+    const campo = (nombre) => {
+      const node = formEl.elements.namedItem(nombre);
+      if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
+        return node.value.trim();
+      }
+      if (node instanceof RadioNodeList) {
+        return String(node.value ?? "").trim();
+      }
+      return String(new FormData(formEl).get(nombre) ?? "").trim();
+    };
+
+    const nombreEnvio = campo("nombreCliente");
+    const telefonoEnvio = campo("telefonoCliente");
+    const notasEnvio = campo("notas");
+
+    setNombreCliente(nombreEnvio);
+    setTelefonoCliente(telefonoEnvio);
+    setNotas(notasEnvio);
+
+    if (!nombreEnvio) {
       setFeedback({ type: "error", text: "El nombre es obligatorio." });
       return;
     }
 
     setSubmitting(true);
     try {
+      /** Trazabilidad: si el servidor reutiliza un Cliente existente por teléfono, `notas` conserva nombre/tel escritos acá. */
+      const partesNotas = [
+        `[Web] nombre declarado: ${nombreEnvio}`,
+        telefonoEnvio ? `tel declarado: ${telefonoEnvio}` : "",
+        notasEnvio,
+      ].filter((p) => String(p ?? "").trim());
+      const notasConTraza = partesNotas.join(" | ");
+
       // fechaHora: mismo string ISO que slots[].fechaHora (sin modificar).
       const data = await crearReservaPublica({
         idPeluqueria: Number(selectedPeluqueriaId),
         fechaHora: selectedSlot,
-        nombreCliente: nombreCliente.trim(),
-        telefonoCliente: telefonoCliente.trim(),
-        notas: notas.trim(),
+        nombreCliente: nombreEnvio,
+        telefonoCliente: telefonoEnvio,
+        notas: notasConTraza,
       });
 
       const salonNombre = typeof data?.peluqueria?.nombre === "string" ? data.peluqueria.nombre.trim() : "";
@@ -253,13 +281,14 @@ export default function PublicBookingSection({ variant = "page" }) {
             )}
           </div>
 
-          <form className="reserva-panel reserva-formulario" onSubmit={enviarReserva}>
+          <form className="reserva-panel reserva-formulario" onSubmit={enviarReserva} autoComplete="off">
             <h3>3) Completa tus datos</h3>
             <label htmlFor="nombre-cliente">Nombre *</label>
             <input
               id="nombre-cliente"
+              name="nombreCliente"
               type="text"
-              autoComplete="name"
+              autoComplete="off"
               value={nombreCliente}
               onChange={(event) => setNombreCliente(event.target.value)}
               required
@@ -268,8 +297,9 @@ export default function PublicBookingSection({ variant = "page" }) {
             <label htmlFor="telefono-cliente">Telefono</label>
             <input
               id="telefono-cliente"
+              name="telefonoCliente"
               type="tel"
-              autoComplete="tel"
+              autoComplete="off"
               inputMode="tel"
               value={telefonoCliente}
               onChange={(event) => setTelefonoCliente(event.target.value)}
@@ -278,6 +308,7 @@ export default function PublicBookingSection({ variant = "page" }) {
             <label htmlFor="notas-reserva">Notas</label>
             <textarea
               id="notas-reserva"
+              name="notas"
               rows="3"
               value={notas}
               onChange={(event) => setNotas(event.target.value)}

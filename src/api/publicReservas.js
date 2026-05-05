@@ -105,9 +105,10 @@ export const messageForPublicApiError = (status, payload) => {
 };
 
 const requestJson = async (url, options = {}) => {
+  const fetchOptions = { credentials: "omit", ...options };
   let response;
   try {
-    response = await fetch(url, options);
+    response = await fetch(url, fetchOptions);
   } catch {
     throw new ApiError("No se pudo conectar con el backend. Revisa red y servidor.");
   }
@@ -150,6 +151,7 @@ export const fetchDisponibilidad = async ({ idPeluqueria, fecha, slotMinutes = 3
 /**
  * POST /api/public/reservas — Content-Type application/json (Accept application/json).
  * `emailCliente` va siempre como un espacio " " porque el formulario público no pide correo (requisito del backend).
+ * Si el servidor reutiliza un cliente existente por telefono, puede mostrar el nombre de la BD; el front igual envia `nombreCliente` y suele anteponer trazabilidad en `notas`.
  *
  * @param {{
  *   idPeluqueria: number,
