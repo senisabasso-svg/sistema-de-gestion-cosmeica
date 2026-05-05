@@ -38,7 +38,6 @@ export default function PublicBookingSection({ variant = "page" }) {
 
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
-  const [emailCliente, setEmailCliente] = useState("");
   const [notas, setNotas] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState({ type: "", text: "" });
@@ -134,7 +133,6 @@ export default function PublicBookingSection({ variant = "page" }) {
         fechaHora: selectedSlot,
         nombreCliente: nombreCliente.trim(),
         telefonoCliente: telefonoCliente.trim(),
-        emailCliente: emailCliente.trim(),
         notas: notas.trim(),
       });
 
@@ -146,12 +144,11 @@ export default function PublicBookingSection({ variant = "page" }) {
       setFeedback({
         type: "success",
         text: cabecera
-          ? `Reserva creada — ${cabecera}. Te esperamos en el horario seleccionado. Si dejaste email, revisa tu bandeja.`
-          : "Reserva creada correctamente. Te esperamos en el horario seleccionado. Si dejaste email, revisa tu bandeja.",
+          ? `Reserva creada — ${cabecera}. Te esperamos en el horario seleccionado.`
+          : "Reserva creada correctamente. Te esperamos en el horario seleccionado.",
       });
       setSelectedSlot("");
       setTelefonoCliente("");
-      setEmailCliente("");
       setNotas("");
       await recargarDisponibilidad();
     } catch (error) {
@@ -276,15 +273,6 @@ export default function PublicBookingSection({ variant = "page" }) {
               inputMode="tel"
               value={telefonoCliente}
               onChange={(event) => setTelefonoCliente(event.target.value)}
-            />
-
-            <label htmlFor="email-cliente">Email</label>
-            <input
-              id="email-cliente"
-              type="email"
-              autoComplete="email"
-              value={emailCliente}
-              onChange={(event) => setEmailCliente(event.target.value)}
             />
 
             <label htmlFor="notas-reserva">Notas</label>

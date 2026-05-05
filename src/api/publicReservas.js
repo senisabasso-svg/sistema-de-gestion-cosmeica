@@ -149,13 +149,13 @@ export const fetchDisponibilidad = async ({ idPeluqueria, fecha, slotMinutes = 3
 
 /**
  * POST /api/public/reservas — Content-Type application/json (Accept application/json).
- * Cuerpo alineado con el backend público:
+ * `emailCliente` va siempre como un espacio " " porque el formulario público no pide correo (requisito del backend).
+ *
  * @param {{
  *   idPeluqueria: number,
  *   fechaHora: string,
  *   nombreCliente: string,
  *   telefonoCliente: string,
- *   emailCliente?: string,
  *   notas?: string,
  * }} payload
  */
@@ -164,7 +164,6 @@ export const crearReservaPublica = async ({
   fechaHora,
   nombreCliente,
   telefonoCliente,
-  emailCliente = "",
   notas = "",
 }) => {
   const url = buildUrl("/api/public/reservas");
@@ -173,11 +172,12 @@ export const crearReservaPublica = async ({
     fechaHora,
     nombreCliente,
     telefonoCliente,
-    emailCliente,
+    emailCliente: " ",
     notas,
   };
   return requestJson(url, {
     method: "POST",
+    cache: "no-store",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
