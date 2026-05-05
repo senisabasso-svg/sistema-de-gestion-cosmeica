@@ -131,7 +131,8 @@ export default function PublicBookingSection({ variant = "page" }) {
 
     setSubmitting(true);
     try {
-      await crearReservaPublica({
+      // fechaHora: mismo string ISO que slots[].fechaHora (sin modificar).
+      const data = await crearReservaPublica({
         idPeluqueria: Number(selectedPeluqueriaId),
         fechaHora: selectedSlot,
         nombreCliente: nombreCliente.trim(),
@@ -140,21 +141,29 @@ export default function PublicBookingSection({ variant = "page" }) {
         notas: "",
       });
 
+      const salonNombre = typeof data?.peluqueria?.nombre === "string" ? data.peluqueria.nombre.trim() : "";
+      const turnoFecha = data?.turno?.fechaHora;
+      const detalleHorario = typeof turnoFecha === "string" ? formatFriendlyDateTime(turnoFecha) : "";
+      const cabecera = [salonNombre, detalleHorario].filter(Boolean).join(" · ");
+
       setFeedback({
         type: "success",
-        text:
-          "Reserva creada correctamente. Tu confirmacion llegara por WhatsApp al numero indicado. Te esperamos en el horario seleccionado.",
+        text: cabecera
+          ? `Reserva creada — ${cabecera}. Tu confirmacion llegara por WhatsApp al numero indicado.`
+          : "Reserva creada. Tu confirmacion llegara por WhatsApp al numero indicado.",
       });
       setSelectedSlot("");
       setNombreCliente("");
       setTelefonoCliente("");
       await recargarDisponibilidad();
     } catch (error) {
+      const text =
+        error instanceof ApiError
+          ? error.message
+          : error?.message || "No se pudo crear la reserva.";
+      setFeedback({ type: "error", text });
       if (error instanceof ApiError && error.status === 409) {
-        setFeedback({ type: "error", text: "Ese horario ya fue tomado. Elige otro e intenta nuevamente." });
         await recargarDisponibilidad();
-      } else {
-        setFeedback({ type: "error", text: error.message || "No se pudo crear la reserva." });
       }
     } finally {
       setSubmitting(false);
