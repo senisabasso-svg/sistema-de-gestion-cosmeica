@@ -38,6 +38,8 @@ export default function PublicBookingSection({ variant = "page" }) {
 
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
+  const [emailCliente, setEmailCliente] = useState("");
+  const [notas, setNotas] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState({ type: "", text: "" });
 
@@ -124,11 +126,6 @@ export default function PublicBookingSection({ variant = "page" }) {
       return;
     }
 
-    if (!telefonoCliente.trim()) {
-      setFeedback({ type: "error", text: "El telefono es obligatorio." });
-      return;
-    }
-
     setSubmitting(true);
     try {
       // fechaHora: mismo string ISO que slots[].fechaHora (sin modificar).
@@ -137,8 +134,8 @@ export default function PublicBookingSection({ variant = "page" }) {
         fechaHora: selectedSlot,
         nombreCliente: nombreCliente.trim(),
         telefonoCliente: telefonoCliente.trim(),
-        emailCliente: "",
-        notas: "",
+        emailCliente: emailCliente.trim(),
+        notas: notas.trim(),
       });
 
       const salonNombre = typeof data?.peluqueria?.nombre === "string" ? data.peluqueria.nombre.trim() : "";
@@ -149,12 +146,13 @@ export default function PublicBookingSection({ variant = "page" }) {
       setFeedback({
         type: "success",
         text: cabecera
-          ? `Reserva creada — ${cabecera}. Tu confirmacion llegara por WhatsApp al numero indicado.`
-          : "Reserva creada. Tu confirmacion llegara por WhatsApp al numero indicado.",
+          ? `Reserva creada — ${cabecera}. Te esperamos en el horario seleccionado. Si dejaste email, revisa tu bandeja.`
+          : "Reserva creada correctamente. Te esperamos en el horario seleccionado. Si dejaste email, revisa tu bandeja.",
       });
       setSelectedSlot("");
-      setNombreCliente("");
       setTelefonoCliente("");
+      setEmailCliente("");
+      setNotas("");
       await recargarDisponibilidad();
     } catch (error) {
       const text =
@@ -260,9 +258,6 @@ export default function PublicBookingSection({ variant = "page" }) {
 
           <form className="reserva-panel reserva-formulario" onSubmit={enviarReserva}>
             <h3>3) Completa tus datos</h3>
-            <p className="reserva-whatsapp-aviso" role="note">
-              Tu confirmacion llegara por WhatsApp al numero que indiques al confirmar la reserva.
-            </p>
             <label htmlFor="nombre-cliente">Nombre *</label>
             <input
               id="nombre-cliente"
@@ -273,7 +268,7 @@ export default function PublicBookingSection({ variant = "page" }) {
               required
             />
 
-            <label htmlFor="telefono-cliente">Telefono *</label>
+            <label htmlFor="telefono-cliente">Telefono</label>
             <input
               id="telefono-cliente"
               type="tel"
@@ -281,7 +276,23 @@ export default function PublicBookingSection({ variant = "page" }) {
               inputMode="tel"
               value={telefonoCliente}
               onChange={(event) => setTelefonoCliente(event.target.value)}
-              required
+            />
+
+            <label htmlFor="email-cliente">Email</label>
+            <input
+              id="email-cliente"
+              type="email"
+              autoComplete="email"
+              value={emailCliente}
+              onChange={(event) => setEmailCliente(event.target.value)}
+            />
+
+            <label htmlFor="notas-reserva">Notas</label>
+            <textarea
+              id="notas-reserva"
+              rows="3"
+              value={notas}
+              onChange={(event) => setNotas(event.target.value)}
             />
 
             {selectedSlot && (
