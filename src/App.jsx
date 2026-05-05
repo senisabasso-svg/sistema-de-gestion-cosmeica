@@ -1,5 +1,14 @@
 import { useState } from "react";
 
+const BRAND_CLAIM =
+  "Recorda que como te ven, te tratan. Ustedes se dedican a nuestra estetica.. Nosotros de la suya como emprendimiento o empresa";
+
+const appendBrandClaim = (text) => {
+  if (!text) return BRAND_CLAIM;
+  if (text.includes(BRAND_CLAIM)) return text;
+  return `${text}\n\n${BRAND_CLAIM}`;
+};
+
 const modules = [
   {
     icon: "📅",
@@ -93,7 +102,7 @@ const faqs = [
 const geminiContext = `
 Sos el asistente comercial de Gestion Cosmetica.
 
-Responde SOLAMENTE con informacion del sistema de gestion para peluquerias y barberias:
+Responde de forma simple y breve (maximo 3 oraciones), SOLAMENTE con informacion del sistema de gestion para peluquerias y barberias:
 - Turnos y agenda
 - Cobro / punto de venta con cliente asociado
 - Clientes (ficha, contacto, notas)
@@ -106,6 +115,8 @@ Responde SOLAMENTE con informacion del sistema de gestion para peluquerias y bar
 Tono: profesional, cercano, claro y sin jerga tecnica.
 No inventes certificaciones, clientes reales, premios, ni precios exactos.
 Si preguntan algo fuera de este sistema, aclara que solo podes responder sobre Gestion Cosmetica.
+Al final de TODAS tus respuestas agrega exactamente esta frase:
+Recorda que como te ven, te tratan. Ustedes se dedican a nuestra estetica.. Nosotros de la suya como emprendimiento o empresa
 `;
 
 export default function App() {
@@ -117,7 +128,9 @@ export default function App() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "Hola, soy el asistente de Gestion Cosmetica. Te respondo solo sobre el sistema.",
+      text: appendBrandClaim(
+        "Hola, soy el asistente de Gestion Cosmetica. Te respondo simple y solo sobre el sistema."
+      ),
     },
   ]);
 
@@ -169,14 +182,16 @@ export default function App() {
         data?.candidates?.[0]?.content?.parts?.map((part) => part.text).join("\n").trim() ||
         "No pude generar respuesta en este momento.";
 
-      setMessages((prev) => [...prev, { role: "assistant", text: aiText }]);
+      setMessages((prev) => [...prev, { role: "assistant", text: appendBrandClaim(aiText) }]);
     } catch (error) {
       setChatError("No se pudo conectar con Gemini. Revisa la API key y la red.");
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          text: "Ahora no pude responder. Si queres, intenta de nuevo en unos segundos.",
+          text: appendBrandClaim(
+            "Ahora no pude responder. Si queres, intenta de nuevo en unos segundos."
+          ),
         },
       ]);
     } finally {
@@ -368,8 +383,8 @@ export default function App() {
         {chatOpen && (
           <section id="chatbox-panel" className="chatbox-panel" aria-label="Chat con asistente IA">
             <header className="chatbox-header">
-              <h3>Asistente IA</h3>
-              <p>Responde sobre Gestion Cosmetica</p>
+              <h3>Chat de Gestion Cosmetica</h3>
+              <p>Consultas simples del sistema</p>
             </header>
 
             <div className="chatbox-messages" role="log" aria-live="polite">
@@ -382,13 +397,13 @@ export default function App() {
             </div>
 
             <form className="chatbox-form" onSubmit={askGemini}>
-              <label htmlFor="chat-input">Tu consulta</label>
+              <label htmlFor="chat-input">Escribi tu consulta</label>
               <textarea
                 id="chat-input"
                 value={chatInput}
                 onChange={(event) => setChatInput(event.target.value)}
-                rows="3"
-                placeholder="Ej: Como me ayuda con turnos y cobros?"
+                rows="2"
+                placeholder="Ej: Como me ayuda con agenda?"
                 required
               />
               {chatError && <p className="chatbox-error">{chatError}</p>}
