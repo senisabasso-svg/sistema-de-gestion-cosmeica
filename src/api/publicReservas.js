@@ -147,14 +147,42 @@ export const fetchDisponibilidad = async ({ idPeluqueria, fecha, slotMinutes = 3
   return requestJson(url);
 };
 
-export const crearReservaPublica = async (payload) => {
+/**
+ * POST /api/public/reservas — Content-Type application/json (Accept application/json).
+ * Cuerpo alineado con el backend público:
+ * @param {{
+ *   idPeluqueria: number,
+ *   fechaHora: string,
+ *   nombreCliente: string,
+ *   telefonoCliente: string,
+ *   emailCliente?: string,
+ *   notas?: string,
+ * }} payload
+ */
+export const crearReservaPublica = async ({
+  idPeluqueria,
+  fechaHora,
+  nombreCliente,
+  telefonoCliente,
+  emailCliente = "",
+  notas = "",
+}) => {
   const url = buildUrl("/api/public/reservas");
+  const body = {
+    idPeluqueria: Number(idPeluqueria),
+    fechaHora,
+    nombreCliente,
+    telefonoCliente,
+    emailCliente,
+    notas,
+  };
   return requestJson(url, {
     method: "POST",
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
 };
 
