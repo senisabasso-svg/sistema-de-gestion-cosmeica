@@ -39,6 +39,12 @@ img {
   margin-inline: auto;
 }
 
+@media (max-width: 679px) {
+  .contenedor {
+    width: min(1120px, 94%);
+  }
+}
+
 .skip-link {
   position: absolute;
   left: 1rem;
@@ -583,7 +589,7 @@ textarea:focus-visible {
   margin-top: 0.7rem;
   display: grid;
   gap: 0.55rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .slot-item {
@@ -596,6 +602,7 @@ textarea:focus-visible {
   display: grid;
   gap: 0.1rem;
   justify-items: center;
+  min-height: 3.1rem;
 }
 
 .slot-item small {
@@ -669,6 +676,12 @@ textarea:focus-visible {
 @media (min-width: 680px) {
   .slots-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 520px) and (max-width: 679px) {
+  .slots-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -786,6 +799,86 @@ button.boton {
 
 .modal-reserva-cuerpo .reserva-publica {
   margin-top: 0.75rem;
+}
+
+@media (max-width: 919px) {
+  .hero {
+    padding-bottom: 2.4rem;
+  }
+
+  .hero-contenido {
+    padding-top: 1.5rem;
+  }
+
+  .hero-acciones .boton {
+    width: 100%;
+    text-align: center;
+  }
+
+  .seccion {
+    padding: 2.35rem 0;
+  }
+
+  .reserva-publica {
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .reserva-panel {
+    padding: 0.85rem;
+  }
+
+  .slot-item {
+    min-height: 3rem;
+    padding: 0.5rem 0.25rem;
+  }
+
+  .modal-reserva-overlay {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+    background: rgba(28, 23, 51, 0.72);
+  }
+
+  .modal-reserva-dialog {
+    width: 100%;
+    max-height: 100dvh;
+    border-radius: 0;
+    border-inline: none;
+    box-shadow: none;
+  }
+
+  .modal-reserva-cabecera {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .modal-reserva-cerrar {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .modal-reserva-cuerpo {
+    padding: 0.6rem 0.75rem calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .chatbox {
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 0.7rem;
+  }
+
+  .chatbox-toggle {
+    width: 100%;
+  }
+
+  .chatbox-panel {
+    width: 100%;
+    max-height: min(72vh, 620px);
+    margin-bottom: 0.55rem;
+  }
 }
 
 @media (min-width: 920px) {
